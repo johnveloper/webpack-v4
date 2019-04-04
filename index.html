@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Webpack</title>
+    <link rel="stylesheet" href="./prism.css">
+    <link rel="stylesheet" href="app.css">
+  </head>
+
+  <body>
+    <header class="Header">
+      <div class="Wrapper">
+        <div class="Row Row--cross--baseline">
+          <h1>Webpack</h1>
+          <p class="thin ml-8">v4</p>
+        </div>        
+      </div>
+    </header>
+
+    <main class="Main">
+      <div class="Wrapper lang-js">
+
+        <p>At its core, webpack is a static module bundler for modern JavaScript apps.</p>
+
+        <p>Any time one file depends on another, webpack treats this as a dependency. This allows webpack to take non-code assets, such as images or web fonts, and also provide them as dependencies for your app.</p>
+
+        <p>When webpack processes your app, it starts from a list of modules defined on the command line or in its config file. Starting from these entry points, webpack recursively builds a dependency graph that includes every module your app needs and then bundles it into a small number of bundles - often, just one - to be loaded by the browser.</p>
+
+        <div class="Note">
+          Bundling the app is especially powerful for HTTP/1.1 clients, as it minimizes the number of times your app has to wait while the browser start a new request. For HTTP/2 however, you can also use <a href="https://webpack.js.org/guides/code-splitting/">Code Splitting</a> to achieve best results. Further reading: <a href="https://medium.com/webpack/webpack-http-2-7083ec3f3ce6">Webpack & HTTP/2</a>, <a href="https://github.com/webpack/webpack/tree/master/examples/http2-aggressive-splitting">HTTP2 Aggresive Splitting Example</a>.
+        </div>
+
+        <p>Since version 4.0.0, webpack does not require a configuration file to bundle your project, nevertheless, it's <a href="https://webpack.js.org/configuration/"></a>incredibly configurable</a> to better fit your needs.</p>
+        
+        <section>
+          <h2>Core Concepts</h2>
+          <p>This document is only a high-level overview of these concepts. We'll cover them in more detail a little bit later.</p>
+
+          <section>
+            <h3>I. Entry</h3>
+            <p>An entry point indicates which module Webpack should use to begin building out its internal dependency graph. Webpack will figure out which other modules and libraries that entry point depends on (directly or indirectly).</p>
+            <section>
+              <h4>Configuration Example</h4>
+<pre><code>module.exports = {
+  entry: './src/js/app.js'
+};</code></pre>              
+            </section>
+            <section>
+              <h4>Default Value</h4>
+              <p>By default its value is <code>./src/index.js</code>.</p>  
+            </section>
+          </section>
+          
+          <section>
+            <h3>II. Output</h3>
+            <p>The <code>output</code> property tells Webpack where to emit the bundles it creates and how to name these files.<p>
+            <section>
+              <h4>Configuration Example</h4>
+<pre><code data-line="2">const path = require('path');
+
+module.exports = {
+  entry: './src/js/app.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'my-webpack-bundle.js'
+  }
+};</code></pre>
+            </section>
+            <section>
+              <h4>Default Value</h4>
+              <p>It defaults to <code>./dist/main.js</code> for the main output file and the <code>./dist</code> for any other generated file.</p>  
+            </section>
+          </section>
+
+          <section>
+            <h3>III. Loaders</h3>
+            <p>Webpack out of the box understands only JavaScript and JSON files.</p>
+            <p>Loaders allow webpack to process other types of files and convert them into valid modules that can be added to the dependency graph and consumed by your app.</p>
+            <section>
+              <h4>Configuration Example</h4>
+<pre><code>module.exports = {
+  module: {
+    rules: [
+      { test: /\.txt$/, use: 'raw-loader' }
+    ]
+  }
+};</code></pre>
+              <p>The configuration above has defined a <code>rules</code> property for a single module with two required properties:</p>
+              <ul>
+                <li><code>test</code> - identifies which file or files should be transformed</li>
+                <li><code>use</code> - indicates which loaders should be used to do the transforming</li>
+              </ul>
+              <p>This basically tells the webpack's compiler that when he come across a path that resolves a <code>.txt</code> file inside of a <code>require() / import</code> statement, he should use the <code>raw-loader</code> to transform it before he adds it to the bundle.</p>
+            </section>
+          </section>
+
+          <section>
+            <h3>IV. Plugins</h3>
+            <p>While loaders are used to transform certain types of modules, plugins can be leveraged to perform a wider range of tasks like bundle optimization, asset management and injection of environment variables.</p>
+            <div class="Note">
+              Check out the <a href="https://webpack.js.org/api/plugins/">plugin interface</a> and how to use it to extends Webpack capabilities.
+            </div>
+            <section>
+              <h4>Configuration Example</h4>
+              <p>In order to use a plugin, you need to <code>require()</code> it and add it to the <code>plugins</code> array.</p>
+<pre><code>const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack'); // to access built-in plugins
+
+module.exports = {
+  plugins: [
+    new HtmlWebpackPlugin({ template: './src/index.html' })
+  ]
+};</code></pre>
+              <p>Now, with the <code>html-webpack-plugin</code>, HTML file is automatically generated with all your generated bundles injected.</p>
+            </section>
+            <div class="Note">
+              Webpack comes with <a href="https://webpack.js.org/plugins/">many built-in plugins</a>.
+            </div>            
+          </section>
+
+          <section>
+            <h3>V. Mode</h3>
+            <p>By setting the <code>mode</code> parameter to either:</p>
+            <ul>
+              <li><code>development</code></li>
+              <li><code>production</code></li>
+              <li><code>none</code></li>
+            </ul>
+            <p>you can enable webpack's built-in optimizations that corresponds to each environment.</p>
+            <section>
+              <h4>configuration example</h4>
+<pre><code>module.exports = {
+  mode: 'development'
+};</code></pre>
+            </section>
+            <section>
+              <h4>Default Value</h4>
+              <p>The default value is <code>production</code>.</p>
+            </section>
+          </section>
+
+          <section>
+            <h3>VI. Browser compatibility</h3>
+            <p>Webpack supports all browsers that are <a href="https://kangax.github.io/compat-table/es5/">ES5-compilant</a> (IE8 and below are not supported).</p>
+            <p>Webpack needs <code>Promise</code> for <code>import()</code> and <code>require.ensure()</code>.</p>
+            <p>If you want to support older browsers, you will need to <a href="https://webpack.js.org/guides/shimming/">load a polyfill</a> before using these expressions.</p>
+          </section>
+
+        </section>
+
+         
+        <section>
+          <h2>Learn more</h2>
+          <p>For a better understanding of these ideas behind module bundlers and how they work under the hood, consult these resources:</p>
+          <ul>
+            <li><a href="https://www.youtube.com/watch?v=UNMkLHzofQI">Manually bundling an Application</a></li>
+            <li><a href="https://www.youtube.com/watch?v=Gc9-7PBqOC8">Live coding a simple module bundler</a></li>
+            <li><a href="https://github.com/ronami/minipack">Detailed explanation of a simple module bundler</a></li>
+          </ul>          
+        </section>
+
+      </div>
+    </main>
+
+    <script src="prism.js"></script>
+  </body>
+
+</html>
