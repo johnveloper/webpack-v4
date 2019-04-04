@@ -40,7 +40,7 @@
           <p>This document is only a high-level overview of these concepts. We'll cover them in more detail a little bit later.</p>
 
           <section>
-            <h3>I. Entry</h3>
+            <h3>I. Entry Points</h3>
             <p>An entry point indicates which module Webpack should use to begin building out its internal dependency graph. Webpack will figure out which other modules and libraries that entry point depends on (directly or indirectly).</p>
             <section>
               <h4>Configuration Example</h4>
@@ -50,7 +50,9 @@
             </section>
             <section>
               <h4>Default Value</h4>
-              <p>By default its value is <code>./src/index.js</code>.</p>  
+<pre><code>module.exports = {
+  entry: './src/index.js'
+};</code></pre>
             </section>
           </section>
           
