@@ -31,6 +31,10 @@ p, .Note {
   align-items: baseline;
 }
 
+.Row--main--center {
+  justify-content: center;
+}
+
 .m-0 {
   margin: 0;
 }
